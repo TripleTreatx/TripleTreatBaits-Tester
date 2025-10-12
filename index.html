@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meine Lieblingsköder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1, h2 {
+            color: #0056b3;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .bait-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .bait-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .bait-item:hover {
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+        }
+        .bait-item.selected {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
+            background-color: #e6f2ff;
+        }
+        .bait-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        .bait-item p {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease-in-out;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .message-box {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #007bff;
+            background-color: #e6f2ff;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .message-box p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .message-box a {
+            color: #0056b3;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .message-box a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Wähle deine Lieblingsköder</h1>
+        <p>Wähle bitte <strong>vier</strong> deiner Lieblingsköder aus der Liste unten aus:</p>
+        <div class="error-message" id="selection-error">Bitte wähle genau vier Köder aus.</div>
+
+        <div class="bait-grid" id="bait-selection-grid">
+            <!-- Köderbilder werden hier dynamisch eingefügt -->
+        </div>
+
+        <div class="form-section">
+            <h2>Deine Daten</h2>
+            <form id="user-info-form">
+                <div class="form-group">
+                    <label for="firstName">Vorname:</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Nachname:</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="street">Straße & Hausnummer:</label>
+                    <input type="text" id="street" name="street" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">Ort:</label>
+                    <input type="text" id="city" name="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="zipCode">Postleitzahl:</label>
+                    <input type="text" id="zipCode" name="zipCode" pattern="[0-9]{5}" title="Bitte gib eine gültige 5-stellige Postleitzahl ein" required>
+                </div>
+                <button type="submit">Absenden</button>
+            </form>
+        </div>
+
+        <div class="message-box" id="thank-you-message">
+            <p>Vielen Dank für deine Teilnahme! Deine Auswahl und deine Daten wurden erfolgreich "übermittelt".</p>
+            <p>Wenn du möchtest, kannst du mich bei diesem Projekt mit einer kleinen Spende über PayPal unterstützen:</p>
+            <p><a href="https://www.paypal.com/paypalme/deinpaypalname" target="_blank">Jetzt spenden via PayPal</a></p>
+            <p>Bitte ersetze "deinpaypalname" im Link durch deinen tatsächlichen PayPal.Me-Namen.</p>
+        </div>
+    </div>
+
+    <script>
+        const baits = [
+  		 { id: 1, name: "Amber Sunset", imageUrl: "images/Amber Sunset.png" },
+   		 { id: 2, name: "Black Fire", imageUrl: "images/Black Fire.png" },
+   		 { id: 3, name: "Candy Pink", imageUrl: "images/Candy Pink.png" },
+   		 { id: 4, name: "Firetiger Lite", imageUrl: "images/Firetiger Lite.png" },
+   		 { id: 5, name: "Golden Shine", imageUrl: "images/Golden Shine.png" },
+   		 { id: 6, name: "Green Pumpkin", imageUrl: "images/Green Pumpkin.png" },
+   		 { id: 7, name: "Ice Blue", imageUrl: "images/Ice Blue.png" },
+   		 { id: 8, name: "Inferno Red", imageUrl: "images/Inferno Red.png" },
+   		 { id: 9, name: "Lime Burst", imageUrl: "images/Lime Burst.png" },
+   		 { id: 10, name: "Midnight", imageUrl: "images/Midnight.png" },
+   		 { id: 11, name: "Motoroil", imageUrl: "images/Motoroil.png" },
+   		 { id: 12, name: "Mystic Oil", imageUrl: "images/Mystic Oil.png" },
+   		 { id: 13, name: "Natural Flame", imageUrl: "images/Natural Flame.png" },
+   		 { id: 14, name: "Pumpkin Spice", imageUrl: "images/Pumpkin Spice.png" },
+  		 { id: 15, name: "Salt & Pepper", imageUrl: "images/Salt & Pepper.png" },
+  		 { id: 16, name: "Snowflake", imageUrl: "images/Snowflake.png" }
+	];
+
+        const baitGrid = document.getElementById('bait-selection-grid');
+        const userInfoForm = document.getElementById('user-info-form');
+        const thankYouMessage = document.getElementById('thank-you-message');
+        const selectionError = document.getElementById('selection-error');
+        let selectedBaits = [];
+
+        // Köder dynamisch zur Seite hinzufügen
+        baits.forEach(bait => {
+            const baitItem = document.createElement('div');
+            baitItem.classList.add('bait-item');
+            baitItem.dataset.id = bait.id;
+            baitItem.innerHTML = `
+                <img src="${bait.imageUrl}" alt="${bait.name}">
+                <p>${bait.name}</p>
+            `;
+            baitItem.addEventListener('click', () => toggleBaitSelection(baitItem));
+            baitGrid.appendChild(baitItem);
+        });
+
+        function toggleBaitSelection(item) {
+            const baitId = parseInt(item.dataset.id);
+
+            if (item.classList.contains('selected')) {
+                item.classList.remove('selected');
+                selectedBaits = selectedBaits.filter(id => id !== baitId);
+            } else {
+                if (selectedBaits.length < 4) {
+                    item.classList.add('selected');
+                    selectedBaits.push(baitId);
+                } else {
+                    alert('Du kannst maximal 4 Köder auswählen.');
+                }
+            }
+            // Fehleranzeige aktualisieren
+            if (selectedBaits.length !== 4) {
+                selectionError.style.display = 'block';
+            } else {
+                selectionError.style.display = 'none';
+            }
+        }
+
+        userInfoForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Verhindert das Neuladen der Seite
+
+            if (selectedBaits.length !== 4) {
+                selectionError.style.display = 'block';
+                // Scroll zum Fehlerbereich
+                selectionError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            } else {
+                selectionError.style.display = 'none';
+            }
+
+            // Hier würden normalerweise die Daten an einen Server gesendet
+            // Da GitHub Pages kein Backend hat, simulieren wir die "Übermittlung"
+            const formData = {
+                firstName: document.getElementById('firstName').value,
+                lastName: document.getElementById('lastName').value,
+                street: document.getElementById('street').value,
+                city: document.getElementById('city').value,
+                zipCode: document.getElementById('zipCode').value,
+                selectedBaits: selectedBaits.map(id => baits.find(b => b.id === id).name)
+            };
+
+            console.log("Übermittelte Daten (Frontend-Simulation):", formData);
+
+            // Formular und Köderauswahl ausblenden
+            baitGrid.style.display = 'none';
+            userInfoForm.style.display = 'none';
+            document.querySelector('.form-section h2').style.display = 'none';
+            document.querySelector('h1').style.display = 'none';
+            document.querySelector('p').style.display = 'none';
+
+
+            // Dankesnachricht anzeigen
+            thankYouMessage.style.display = 'block';
+            thankYouMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    </script>
+</body>
+</html>
