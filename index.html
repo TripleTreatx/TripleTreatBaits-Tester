@@ -128,6 +128,30 @@
             margin-bottom: 10px;
             display: none;
         }
+
+        /* Styles for the welcome screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .welcome-screen h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .welcome-screen p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .welcome-screen button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+        }
+
+        /* Utility classes to hide/show sections */
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -136,40 +160,55 @@
             <img src="image/Logo.png" alt="Firmenlogo">
         </div>
 
-        <h1>Wähle deine Lieblingsfarben</h1>
-        <p>Wähle bitte <strong>vier</strong> deiner Lieblingsfarben aus der Liste unten aus:</p>
-        <div class="error-message" id="selection-error">Bitte wähle genau vier Köder aus.</div>
-
-        <div class="bait-grid" id="bait-selection-grid">
-            <!-- Köderbilder werden hier dynamisch eingefügt -->
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <h1>Herzlichen Glückwunsch!</h1>
+            <p>
+                Ich habe dich als Tester für meine TripleTreat Baits Trinity 3,5" ausgewählt und freue mich auf dein ehrliches 	Feedback! Mich interessiert, wie dir die Köder gefallen und wie sie sich beim Angeln machen.
+            </p>
+            <p>
+                Klicke auf "Weiter", um deine vier Lieblingsfarben auszuwählen und deine Versanddaten einzugeben.
+            </p>
+            <button id="startButton">Weiter</button>
         </div>
 
-        <div class="form-section">
-            <h2>Deine Daten</h2>
-            <form id="user-info-form">
-                <div class="form-group">
-                    <label for="firstName">Vorname:</label>
-                    <input type="text" id="firstName" name="firstName" required>
-                </div>
-                <div class="form-group">
-                    <label for="lastName">Nachname:</label>
-                    <input type="text" id="lastName" name="lastName" required>
-                </div>
-                <div class="form-group">
-                    <label for="street">Straße & Hausnummer:</label>
-                    <input type="text" id="street" name="street" required>
-                </div>
-                <div class="form-group">
-                    <label for="city">Ort:</label>
-                    <input type="text" id="city" name="city" required>
-                </div>
-                <div class="form-group">
-                    <label for="zipCode">Postleitzahl:</label>
-                    <input type="text" id="zipCode" name="zipCode" pattern="[0-9]{5}" title="Bitte gib eine gültige 5-stellige Postleitzahl ein" required>
-                </div>
-                <button type="submit">Absenden</button>
-            </form>
-        </div>
+        <!-- Main Form Content (initially hidden) -->
+        <div id="mainContent" class="hidden">
+            <h1>Wähle deine Lieblingsfarben</h1>
+            <p>Wähle bitte <strong>vier</strong> deiner Lieblingsfarben aus der Liste unten aus:</p>
+            <div class="error-message" id="selection-error">Bitte wähle genau vier Köder aus.</div>
+
+            <div class="bait-grid" id="bait-selection-grid">
+                <!-- Köderbilder werden hier dynamisch eingefügt -->
+            </div>
+
+            <div class="form-section">
+                <h2>Deine Daten</h2>
+                <form id="user-info-form">
+                    <div class="form-group">
+                        <label for="firstName">Vorname:</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Nachname:</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="street">Straße & Hausnummer:</label>
+                        <input type="text" id="street" name="street" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">Ort:</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="zipCode">Postleitzahl:</label>
+                        <input type="text" id="zipCode" name="zipCode" pattern="[0-9]{5}" title="Bitte gib eine gültige 5-stellige Postleitzahl ein" required>
+                    </div>
+                    <button type="submit">Absenden</button>
+                </form>
+            </div>
+        </div> <!-- End of mainContent -->
 
         <div class="message-box" id="thank-you-message">
           <h2>Vielen Dank für deine Teilnahme!</h2>
@@ -181,7 +220,8 @@
           </p>
           <a href="https://www.paypal.com/paypalme/3DDruckTripleTreat" target="_blank" class="paypal-btn">
             💙 Jetzt freiwillig via PayPal unterstützen
-      </a>
+          </a>
+        </div>
     </div>
 
    <script>
@@ -204,11 +244,22 @@
         { id: 16, name: "Snowflake", imageUrl: "image/Snowflake.png" }
     ];
 
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const mainContent = document.getElementById('mainContent');
+    const startButton = document.getElementById('startButton');
+
     const baitGrid = document.getElementById('bait-selection-grid');
     const userInfoForm = document.getElementById('user-info-form');
     const thankYouMessage = document.getElementById('thank-you-message');
     const selectionError = document.getElementById('selection-error');
     let selectedBaits = [];
+
+    // Event Listener für den "Weiter" Button
+    startButton.addEventListener('click', () => {
+        welcomeScreen.classList.add('hidden'); // Willkommensseite ausblenden
+        mainContent.classList.remove('hidden'); // Hauptinhalt einblenden
+    });
+
 
     // Köder dynamisch zur Seite hinzufügen
     baits.forEach(bait => {
@@ -278,17 +329,14 @@
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            return response.json(); // Oder response.text(), je nachdem, was der Webhook zurückgibt
+            // Wenn der Webhook eine JSON-Antwort zurückgibt, parsen wir sie
+            // Andernfalls können wir auch response.text() verwenden oder es weglassen, wenn keine Antwort erwartet wird.
+            return response.json(); 
         })
         .then(data => {
             console.log('Webhook Response:', data);
             // Formular und Köderauswahl ausblenden
-            baitGrid.style.display = 'none';
-            userInfoForm.style.display = 'none';
-            document.querySelector('.form-section h2').style.display = 'none';
-            document.querySelector('h1').style.display = 'none';
-            document.querySelector('p').style.display = 'none';
-
+            mainContent.classList.add('hidden'); // Hauptinhalt ausblenden
             // Dankesnachricht anzeigen
             thankYouMessage.style.display = 'block';
             thankYouMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
