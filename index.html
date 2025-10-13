@@ -10,17 +10,23 @@
             margin: 20px;
             background-color: #1a1a1a; /* Darker background */
             color: #e0e0e0; /* Lighter text for dark mode */
+            display: flex; /* Neu: Setze body auf flex, um den Container zu zentrieren */
+            justify-content: center; /* Neu: Horizontale Zentrierung */
+            align-items: flex-start; /* Neu: Startet oben (oder center für vertikale Zentrierung) */
+            min-height: 100vh; /* Neu: Mindesthöhe des Bodys auf den Viewport setzen */
         }
         h1, h2 {
             color: #00bcd4; /* Turquoise for headings */
         }
         .container {
             max-width: 900px;
-            margin: auto;
+            width: 100%; /* Neu: Sicherstellen, dass der Container die volle Breite nutzt bis max-width */
+            margin: 20px auto; /* Angepasst: Vertikaler Rand, horizontal zentriert */
             background: #2a2a2a; /* Darker container background */
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 15px rgba(0,0,0,0.5); /* More prominent shadow for dark mode */
+            box-sizing: border-box; /* Neu: Padding in die Breite einbeziehen */
         }
         .logo {
             text-align: center;
@@ -100,7 +106,7 @@
             background-color: #0097a7; /* Darker turquoise on hover */
         }
         .message-box {
-            display: none;
+            display: none; /* Keep hidden by default */
             margin-top: 30px;
             padding: 20px;
             border: 1px solid #00bcd4; /* Turquoise border */
@@ -148,26 +154,61 @@
             font-size: 1.2em;
         }
 
+        /* Styles for the password screen */
+        .password-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .password-screen input[type="text"],
+        .password-screen input[type="password"] {
+            width: 80%;
+            max-width: 300px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: #e0e0e0;
+            font-size: 1.1em;
+            text-align: center;
+            box-sizing: border-box; /* Neu: Padding in die Breite einbeziehen */
+        }
+        .password-screen button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+        }
+        .password-screen .error-message {
+            color: #ff6666;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
         /* Utility classes to hide/show sections */
         .hidden {
-            display: none;
+            display: none !important; /* Wichtig: !important, um Überschreibungen zu verhindern */
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            <img src="image/Logo.png" alt="Firmenlogo">
+        <!-- Dein HTML-Inhalt, wie im letzten Beitrag -->
+        <!-- NEW: Password Entry Screen -->
+        <div id="passwordScreen" class="password-screen">
+            <h1>Zugang zum Testpaket</h1>
+            <p>Bitte gib dein persönliches Passwort ein, um zum Testpaket zu gelangen:</p>
+            <input type="text" id="accessPassword" placeholder="Dein Zugangscode">
+            <div class="error-message" id="password-error" style="display: none;">Ungültiges Passwort oder bereits verwendet.</div>
+            <button id="submitPassword">Zugang prüfen</button>
         </div>
 
-        <!-- Welcome Screen -->
-        <div id="welcomeScreen" class="welcome-screen">
+        <!-- Welcome Screen (initially hidden) -->
+        <div id="welcomeScreen" class="welcome-screen hidden">
             <h1>Herzlichen Glückwunsch!</h1>
             <p>
-                Ich habe dich als Tester für meine TripleTreat Baits Trinity 3,5" ausgewählt und freue mich auf dein ehrliches 	Feedback! Mich interessiert, wie dir die Köder gefallen und wie sie sich beim Angeln machen.
+                Ich habe dich als Tester für meine TripleTreat Gummifische ausgewählt und freue mich riesig auf dein Feedback! Deine Meinung ist mir sehr wichtig, um die Köder weiter zu verbessern und perfekt auf die Bedürfnisse der Angler abzustimmen.
             </p>
             <p>
-                Klicke auf "Weiter", um deine vier Lieblingsfarben auszuwählen und deine Versanddaten einzugeben.
+                Klicke auf "Weiter", um deine Lieblingsfarben auszuwählen und deine Versanddaten einzugeben.
             </p>
             <button id="startButton">Weiter</button>
         </div>
@@ -210,7 +251,7 @@
             </div>
         </div> <!-- End of mainContent -->
 
-        <div class="message-box" id="thank-you-message">
+        <div class="message-box" id="thank-you-message" class="hidden">
           <h2>Vielen Dank für deine Teilnahme!</h2>
           <p>Deine Auswahl und deine Daten wurden erfolgreich übermittelt.</p>
           <p>
@@ -223,8 +264,8 @@
           </a>
         </div>
     </div>
-
-   <script>
+    <!-- ... dein JavaScript-Code, wie im letzten Beitrag ... -->
+    <script>
     const baits = [
         { id: 1, name: "Amber Sunset", imageUrl: "image/Amber Sunset.png" },
         { id: 2, name: "Black Fire", imageUrl: "image/Black Fire.png" },
@@ -244,6 +285,12 @@
         { id: 16, name: "Snowflake", imageUrl: "image/Snowflake.png" }
     ];
 
+    // Neue Elemente für den Passwort-Screen
+    const passwordScreen = document.getElementById('passwordScreen');
+    const accessPasswordInput = document.getElementById('accessPassword');
+    const submitPasswordButton = document.getElementById('submitPassword');
+    const passwordError = document.getElementById('password-error');
+
     const welcomeScreen = document.getElementById('welcomeScreen');
     const mainContent = document.getElementById('mainContent');
     const startButton = document.getElementById('startButton');
@@ -254,12 +301,54 @@
     const selectionError = document.getElementById('selection-error');
     let selectedBaits = [];
 
-    // Event Listener für den "Weiter" Button
+    // URL für die Passwort-Validierung und die finale Datenübermittlung (gleicher Webhook oder separate Endpunkte)
+    const webhookBaseUrl = 'https://papacpun8n.ddns.net/webhook/Mariokontakte';
+    // Für die Passwortprüfung könnte dein Webhook einen speziellen Endpunkt haben, z.B. /validatePassword
+    const passwordValidationUrl = 'https://papacpun8n.ddns.net/webhook/validatePassword'; // Diesen Endpunkt müsstest du auf deinem Webhook implementieren!
+
+    // Event Listener für den "Zugang prüfen" Button
+    submitPasswordButton.addEventListener('click', async () => {
+        const password = accessPasswordInput.value.trim();
+        if (!password) {
+            passwordError.textContent = "Bitte gib ein Passwort ein.";
+            passwordError.style.display = 'block';
+            return;
+        }
+
+        try {
+            // Hier wird das Passwort an den Server gesendet zur Validierung
+            const response = await fetch(passwordValidationUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password: password }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.isValid) { // Dein Webhook sollte { isValid: true } zurückgeben
+                passwordError.style.display = 'none';
+                passwordScreen.classList.add('hidden'); // Passwort-Screen ausblenden
+                welcomeScreen.classList.remove('hidden'); // Willkommensseite einblenden
+                // Speichere das valide Passwort temporär, um es später mit der Bestellung zu senden
+                sessionStorage.setItem('validPassword', password);
+            } else {
+                passwordError.textContent = result.message || "Ungültiges Passwort oder bereits verwendet.";
+                passwordError.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Fehler bei der Passwortvalidierung:', error);
+            passwordError.textContent = "Ein Fehler ist aufgetreten. Bitte versuche es später noch einmal.";
+            passwordError.style.display = 'block';
+        }
+    });
+
+    // Event Listener für den "Weiter" Button auf dem Welcome Screen
     startButton.addEventListener('click', () => {
         welcomeScreen.classList.add('hidden'); // Willkommensseite ausblenden
         mainContent.classList.remove('hidden'); // Hauptinhalt einblenden
     });
-
 
     // Köder dynamisch zur Seite hinzufügen
     baits.forEach(bait => {
@@ -288,7 +377,6 @@
                 alert('Du kannst maximal 4 Köder auswählen.');
             }
         }
-        // Fehleranzeige aktualisieren
         if (selectedBaits.length !== 4) {
             selectionError.style.display = 'block';
         } else {
@@ -296,8 +384,8 @@
         }
     }
 
-    userInfoForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Verhindert das Neuladen der Seite
+    userInfoForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
 
         if (selectedBaits.length !== 4) {
             selectionError.style.display = 'block';
@@ -307,7 +395,15 @@
             selectionError.style.display = 'none';
         }
 
+        const validPassword = sessionStorage.getItem('validPassword'); // Passwort abrufen
+        if (!validPassword) {
+            alert("Sitzung abgelaufen oder kein gültiges Passwort gefunden. Bitte starte neu.");
+            window.location.reload(); // Seite neu laden und zum Passwort-Screen zurückkehren
+            return;
+        }
+
         const formData = {
+            password: validPassword, // Das validierte Passwort mitsenden
             firstName: document.getElementById('firstName').value,
             lastName: document.getElementById('lastName').value,
             street: document.getElementById('street').value,
@@ -316,36 +412,31 @@
             selectedBaits: selectedBaits.map(id => baits.find(b => b.id === id).name)
         };
 
-        const webhookUrl = 'https://papacpun8n.ddns.net/webhook/Mariokontakte';
+        try {
+            const response = await fetch(webhookBaseUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
 
-        fetch(webhookUrl, {
-            method: 'POST', // Oder 'GET', je nachdem, was dein Webhook erwartet
-            headers: {
-                'Content-Type': 'application/json', // Wichtig für JSON-Daten
-            },
-            body: JSON.stringify(formData), // Daten als JSON-String senden
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+            const result = await response.json();
+
+            if (response.ok && result.success) { // Dein Webhook sollte { success: true } zurückgeben
+                console.log('Webhook Response:', result);
+                mainContent.classList.add('hidden');
+                thankYouMessage.style.display = 'block';
+                thankYouMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                sessionStorage.removeItem('validPassword'); // Passwort nach erfolgreicher Bestellung löschen
+            } else {
+                console.error('Webhook Error:', result.message);
+                alert(result.message || 'Es gab ein Problem beim Senden der Daten. Das Passwort wurde möglicherweise bereits verwendet oder ist ungültig. Bitte versuche es später noch einmal.');
             }
-            // Wenn der Webhook eine JSON-Antwort zurückgibt, parsen wir sie
-            // Andernfalls können wir auch response.text() verwenden oder es weglassen, wenn keine Antwort erwartet wird.
-            return response.json(); 
-        })
-        .then(data => {
-            console.log('Webhook Response:', data);
-            // Formular und Köderauswahl ausblenden
-            mainContent.classList.add('hidden'); // Hauptinhalt ausblenden
-            // Dankesnachricht anzeigen
-            thankYouMessage.style.display = 'block';
-            thankYouMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        })
-        .catch(error => {
+        } catch (error) {
             console.error('There was a problem with the fetch operation:', error);
-            alert('Es gab ein Problem beim Senden der Daten. Bitte versuche es später noch einmal.');
-            // Optional: Fehler-Nachricht für den Benutzer anzeigen
-        });
+            alert('Ein Netzwerkfehler ist aufgetreten. Bitte überprüfe deine Verbindung.');
+        }
     });
 </script>
 </body>
