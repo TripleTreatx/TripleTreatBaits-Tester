@@ -8,19 +8,27 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #1a1a1a; /* Darker background */
+            color: #e0e0e0; /* Lighter text for dark mode */
         }
         h1, h2 {
-            color: #0056b3;
+            color: #00bcd4; /* Turquoise for headings */
         }
         .container {
             max-width: 900px;
             margin: auto;
-            background: #fff;
+            background: #2a2a2a; /* Darker container background */
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); /* More prominent shadow for dark mode */
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo img {
+            max-width: 200px; /* Adjust as needed */
+            height: auto;
         }
         .bait-grid {
             display: grid;
@@ -29,21 +37,21 @@
             margin-bottom: 30px;
         }
         .bait-item {
-            border: 1px solid #ddd;
+            border: 1px solid #444; /* Darker border */
             border-radius: 5px;
             padding: 10px;
             text-align: center;
-            background-color: #f9f9f9;
+            background-color: #333; /* Darker item background */
             cursor: pointer;
             transition: all 0.2s ease-in-out;
         }
         .bait-item:hover {
-            box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.6); /* Turquoise shadow on hover */
         }
         .bait-item.selected {
-            border-color: #007bff;
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.6);
-            background-color: #e6f2ff;
+            border-color: #00bcd4; /* Turquoise border when selected */
+            box-shadow: 0 0 12px rgba(0, 188, 212, 0.8); /* Stronger turquoise shadow */
+            background-color: #3b5055; /* Slightly lighter dark for selected */
         }
         .bait-item img {
             max-width: 100%;
@@ -54,12 +62,12 @@
         .bait-item p {
             font-size: 0.9em;
             font-weight: bold;
-            color: #555;
+            color: #e0e0e0; /* Lighter text */
         }
         .form-section {
             margin-top: 30px;
             padding-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #444; /* Darker border */
         }
         .form-group {
             margin-bottom: 15px;
@@ -72,12 +80,14 @@
         .form-group input[type="text"] {
             width: calc(100% - 22px);
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #555; /* Darker input border */
             border-radius: 4px;
             box-sizing: border-box;
+            background-color: #333; /* Darker input background */
+            color: #e0e0e0; /* Lighter input text */
         }
         button {
-            background-color: #28a745;
+            background-color: #00bcd4; /* Turquoise button */
             color: white;
             padding: 12px 20px;
             border: none;
@@ -87,23 +97,24 @@
             transition: background-color 0.2s ease-in-out;
         }
         button:hover {
-            background-color: #218838;
+            background-color: #0097a7; /* Darker turquoise on hover */
         }
         .message-box {
             display: none;
             margin-top: 30px;
             padding: 20px;
-            border: 1px solid #007bff;
-            background-color: #e6f2ff;
+            border: 1px solid #00bcd4; /* Turquoise border */
+            background-color: #3b5055; /* Slightly lighter dark for message box */
             border-radius: 8px;
             text-align: center;
         }
         .message-box p {
             font-size: 1.1em;
             margin-bottom: 15px;
+            color: #e0e0e0;
         }
         .message-box a {
-            color: #0056b3;
+            color: #00bcd4; /* Turquoise link */
             text-decoration: none;
             font-weight: bold;
         }
@@ -111,7 +122,7 @@
             text-decoration: underline;
         }
         .error-message {
-            color: red;
+            color: #ff6666; /* Red for errors */
             font-size: 0.9em;
             margin-top: -10px;
             margin-bottom: 10px;
@@ -121,6 +132,10 @@
 </head>
 <body>
     <div class="container">
+        <div class="logo">
+            <img src="image/Logo.png" alt="Firmenlogo">
+        </div>
+
         <h1>Wähle deine Lieblingsköder</h1>
         <p>Wähle bitte <strong>vier</strong> deiner Lieblingsköder aus der Liste unten aus:</p>
         <div class="error-message" id="selection-error">Bitte wähle genau vier Köder aus.</div>
@@ -160,7 +175,6 @@
             <p>Vielen Dank für deine Teilnahme! Deine Auswahl und deine Daten wurden erfolgreich "übermittelt".</p>
             <p>Wenn du möchtest, kannst du mich bei diesem Projekt mit einer kleinen Spende über PayPal unterstützen:</p>
             <p><a href="https://paypalme/MarioKunze1807" target="_blank">Jetzt spenden via PayPal</a></p>
-            
         </div>
     </div>
 
