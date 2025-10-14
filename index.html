@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dein TripleTreat Baits Testpaket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #1a1a1a; /* Darker background */
+            color: #e0e0e0; /* Lighter text for dark mode */
+            display: flex; /* Neu: Setze body auf flex, um den Container zu zentrieren */
+            justify-content: center; /* Neu: Horizontale Zentrierung */
+            align-items: flex-start; /* Neu: Startet oben (oder center für vertikale Zentrierung) */
+            min-height: 100vh; /* Neu: Mindesthöhe des Bodys auf den Viewport setzen */
+        }
+        h1, h2 {
+            color: #00bcd4; /* Turquoise for headings */
+        }
+        .container {
+            max-width: 900px;
+            width: 100%; /* Neu: Sicherstellen, dass der Container die volle Breite nutzt bis max-width */
+            margin: 20px auto; /* Angepasst: Vertikaler Rand, horizontal zentriert */
+            background: #2a2a2a; /* Darker container background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5); /* More prominent shadow for dark mode */
+            box-sizing: border-box; /* Neu: Padding in die Breite einbeziehen */
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .logo img {
+            max-width: 200px; /* Adjust as needed */
+            height: auto;
+        }
+        .bait-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .bait-item {
+            border: 1px solid #444; /* Darker border */
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            background-color: #333; /* Darker item background */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        .bait-item:hover {
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.6); /* Turquoise shadow on hover */
+        }
+        .bait-item.selected {
+            border-color: #00bcd4; /* Turquoise border when selected */
+            box-shadow: 0 0 12px rgba(0, 188, 212, 0.8); /* Stronger turquoise shadow */
+            background-color: #3b5055; /* Slightly lighter dark for selected */
+        }
+        .bait-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+        .bait-item p {
+            font-size: 0.9em;
+            font-weight: bold;
+            color: #e0e0e0; /* Lighter text */
+        }
+        .form-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #444; /* Darker border */
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #555; /* Darker input border */
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #333; /* Darker input background */
+            color: #e0e0e0; /* Lighter input text */
+        }
+        button {
+            background-color: #00bcd4; /* Turquoise button */
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s ease-in-out;
+        }
+        button:hover {
+            background-color: #0097a7; /* Darker turquoise on hover */
+        }
+        .message-box {
+            display: none; /* Keep hidden by default */
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #00bcd4; /* Turquoise border */
+            background-color: #3b5055; /* Slightly lighter dark for message box */
+            border-radius: 8px;
+            text-align: center;
+        }
+        .message-box p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+        .message-box a {
+            color: #00bcd4; /* Turquoise link */
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .message-box a:hover {
+            text-decoration: underline;
+        }
+        /* Stil für den Zusatztext nach dem PayPal-Link */
+        .paypal-info-text {
+            margin-top: 15px; /* Abstand zum PayPal-Button */
+            font-size: 0.95em; /* Etwas kleiner als der Standard-P-Text */
+            color: #b0b0b0; /* Etwas helleres Grau */
+            line-height: 1.4;
+        }
+        /* Stil für den Footer-Text */
+        .thank-you-footer {
+            margin-top: 30px; /* Abstand nach oben */
+            font-size: 1em;
+            color: #cccccc; /* Etwas hellerer Grauton */
+            line-height: 1.5;
+        }
+        .error-message {
+            color: #ff6666; /* Red for errors */
+            font-size: 0.9em;
+            margin-top: -10px;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        /* Styles for the welcome screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .welcome-screen h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .welcome-screen p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .welcome-screen button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+        }
+
+        /* Styles for the password screen */
+        .password-screen {
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .password-screen input[type="text"],
+        .password-screen input[type="password"] {
+            width: 80%;
+            max-width: 300px;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #555;
+            border-radius: 4px;
+            background-color: #333;
+            color: #e0e0e0;
+            font-size: 1.1em;
+            text-align: center;
+            box-sizing: border-box; /* Neu: Padding in die Breite einbeziehen */
+        }
+        .password-screen button {
+            padding: 15px 30px;
+            font-size: 1.2em;
+        }
+        .password-screen .error-message {
+            color: #ff6666;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* Utility classes to hide/show sections */
+        .hidden {
+            display: none !important; /* Wichtig: !important, um Überschreibungen zu verhindern */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="passwordScreen" class="password-screen">
+            <h1>Zugang zum Testpaket</h1>
+            <p>Bitte gib dein persönliches Passwort ein, um zum Testpaket zu gelangen.</p>
+            <p style="font-size: 0.9em; color: #b0b0b0;">Bitte beachte die Groß- und Kleinschreibung.</p> <!-- HIER HINWEIS EINGEFÜGT -->
+            <input type="text" id="accessPassword" placeholder="Dein Zugangscode">
+            <div class="error-message" id="password-error" style="display: none;"></div>
+            <button id="submitPassword">Zugang prüfen</button>
+        </div>
+
+        <div id="welcomeScreen" class="welcome-screen hidden">
+            <h1>Herzlichen Glückwunsch!</h1>
+            <p>
+                Ich habe dich als Tester für meine TripleTreat Gummifische ausgewählt und freue mich riesig auf dein Feedback! Deine Meinung ist mir sehr wichtig, um die Köder weiter zu verbessern und perfekt auf die Bedürfnisse der Angler abzustimmen.
+            </p>
+            <p>
+                Klicke auf "Weiter", um deine Lieblingsfarben auszuwählen und deine Versanddaten einzugeben.
+            </p>
+            <button id="startButton">Weiter</button>
+        </div>
+
+        <div id="mainContent" class="hidden">
+            <h1>Wähle deine Lieblingsfarben</h1>
+            <p>Wähle bitte <strong>vier</strong> deiner Lieblingsfarben aus der Liste unten aus:</p>
+            <div class="error-message" id="selection-error">Bitte wähle genau vier Köder aus.</div>
+
+            <div class="bait-grid" id="bait-selection-grid">
+                <!-- Köderbilder werden hier dynamisch eingefügt -->
+            </div>
+
+            <div class="form-section">
+                <h2>Deine Daten</h2>
+                <form id="user-info-form">
+                    <div class="form-group">
+                        <label for="firstName">Vorname:</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Nachname:</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="street">Straße & Hausnummer:</label>
+                        <input type="text" id="street" name="street" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">Ort:</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="zipCode">Postleitzahl:</label>
+                        <input type="text" id="zipCode" name="zipCode" pattern="[0-9]{5}" title="Bitte gib eine gültige 5-stellige Postleitzahl ein" required>
+                    </div>
+                    <button type="submit">Absenden</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="message-box" id="thank-you-message" class="hidden">
+          <h2>Vielen Dank für deine Teilnahme!</h2>
+          <p>Deine Auswahl und deine Daten wurden erfolgreich übermittelt.</p>
+          <p>
+            Mir ist wichtig, dass du Spaß am Testen hast – dein Feedback zählt!
+            Wenn du mich darüber hinaus mit einer kleinen freiwilligen Spende über PayPal
+            unterstützen möchtest, freue ich mich riesig. Aber klar: Das ist absolut kein Muss.
+          </p>
+          <a href="#" onclick="trackAndGoToPaypal(event)" class="paypal-btn">
+            💙 Jetzt freiwillig via PayPal unterstützen
+          </a>
+          <!-- NEUER TEXT HIER -->
+          <p class="paypal-info-text">
+            Die Unterstützer dieses Projekts sollen natürlich nicht leer ausgehen und bekommen ein kleines Geschenk.
+          </p>
+          <!-- Footer-Text -->
+          <p class="thank-you-footer">
+            Ich danke dir für deine Zusammenarbeit und wünsche dir einen schönen Tag.
+            Dein Testpaket wird bald bei dir sein!
+          </p>
+        </div>
+    </div>
+    <script>
+    const baits = [
+        { id: 1, name: "Amber Sunset", imageUrl: "image/Amber Sunset.png" },
+        { id: 2, name: "Black Fire", imageUrl: "image/Black Fire.png" },
+        { id: 3, name: "Candy Pink", imageUrl: "image/Candy Pink.png" },
+        { id: 4, name: "Firetiger Lite", imageUrl: "image/Firetiger Lite.png" },
+        { id: 5, name: "Golden Shine", imageUrl: "image/Golden Shine.png" },
+        { id: 6, name: "Green Pumpkin", imageUrl: "image/Green Pumpkin.png" },
+        { id: 7, name: "Ice Blue", imageUrl: "image/Ice Blue.png" },
+        { id: 8, name: "Inferno Red", imageUrl: "image/Inferno Red.png" },
+        { id: 9, name: "Lime Burst", imageUrl: "image/Lime Burst.png" },
+        { id: 10, name: "Midnight", imageUrl: "image/Midnight.png" },
+        { id: 11, name: "Motoroil", imageUrl: "image/Motoroil.png" },
+        { id: 12, name: "Mystic Oil", imageUrl: "image/Mystic Oil.png" },
+        { id: 13, name: "Natural Flame", imageUrl: "image/Natural Flame.png" },
+        { id: 14, name: "Pumpkin Spice", imageUrl: "image/Pumpkin Spice.png" },
+        { id: 15, name: "Salt & Pepper", imageUrl: "image/Salt & Pepper.png" },
+        { id: 16, name: "Snowflake", imageUrl: "image/Snowflake.png" }
+    ];
+
+    const passwordScreen = document.getElementById('passwordScreen');
+    const accessPasswordInput = document.getElementById('accessPassword');
+    const submitPasswordButton = document.getElementById('submitPassword');
+    const passwordError = document.getElementById('password-error');
+
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const mainContent = document.getElementById('mainContent');
+    const startButton = document.getElementById('startButton');
+
+    const baitGrid = document.getElementById('bait-selection-grid');
+    const userInfoForm = document.getElementById('user-info-form');
+    const thankYouMessage = document.getElementById('thank-you-message');
+    const selectionError = document.getElementById('selection-error');
+    let selectedBaits = [];
+
+    // Webhook-URL für die Formulardaten (deine ursprüngliche URL)
+    const dataWebhookUrl = 'https://tripletreat.duckdns.org/webhook/Kontakte';
+    // NEU: Separater Webhook-URL für die Passwortprüfung
+    const passwordWebhookUrl = 'https://tripletreat.duckdns.org/webhook/Passwort'; // <--- HIER DEINEN ZWEITEN WEBHOOK EINTRAGEN!
+    // NEU: Webhook-URL für das PayPal-Klick-Tracking
+    const paypalClickWebhookUrl = 'https://tripletreat.duckdns.org/webhook/PaypalKlick'; // <--- HIER DEINEN NEUEN TRACKING-WEBHOOK EINTRAGEN!
+    const paypalMeLink = 'https://www.paypal.com/paypalme/3DDruckTripleTreat'; // Der eigentliche PayPal-Link
+
+    // Temporäre Speicherung des gültigen Passworts
+    let validPassword = null;
+
+    // NEUE FUNKTION: Sendet einen Klick an den Tracking-Webhook und leitet weiter
+    async function trackAndGoToPaypal(event) {
+        event.preventDefault(); // Verhindert, dass der Link sofort navigiert
+
+        console.log("PayPal link clicked. Sending tracking info to webhook...");
+        try {
+            await fetch(paypalClickWebhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    timestamp: new Date().toISOString(),
+                    // Du könntest hier auch z.B. die IP-Adresse des Users senden, falls dein Webhook das erkennt
+                    // oder eine Session-ID, falls du diese generierst.
+                }),
+            });
+            console.log("PayPal click tracked successfully.");
+        } catch (error) {
+            console.error('Error tracking PayPal click:', error);
+            // Fehler beim Tracking sollte die Weiterleitung zu PayPal nicht blockieren
+        }
+
+        // Leite den Benutzer nach dem Tracking zu PayPal weiter
+        window.open(paypalMeLink, '_blank');
+    }
+
+
+    // Event Listener für den "Zugang prüfen" Button
+    submitPasswordButton.addEventListener('click', async () => {
+        console.log("Submit button clicked.");
+        const password = accessPasswordInput.value.trim();
+        if (!password) {
+            passwordError.textContent = "Bitte gib ein Passwort ein.";
+            passwordError.style.display = 'block';
+            console.log("No password entered.");
+            return;
+        }
+
+        console.log("Attempting to send password to webhook:", passwordWebhookUrl, "with password:", password);
+        try {
+            const response = await fetch(passwordWebhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password: password }),
+            });
+
+            console.log("Received response from webhook. Status:", response.status, "OK:", response.ok);
+
+            const result = await response.json();
+            console.log("Parsed JSON response:", result);
+
+            // NEUE PRÜFUNG: Wenn result direkt ein Objekt ist, wie {true: "1234"}
+            if (response.ok && typeof result === 'object' && result !== null) {
+                const isValid = result.hasOwnProperty('true'); // Prüfe, ob der Schlüssel 'true' direkt im Objekt existiert
+
+                if (isValid) {
+                    passwordError.style.display = 'none';
+                    passwordScreen.classList.add('hidden');
+                    welcomeScreen.classList.remove('hidden');
+                    validPassword = password;
+                    console.log("Password valid. Proceeding to welcome screen.");
+                } else {
+                    // Hier gehen wir davon aus, dass wenn 'true' nicht existiert, 'false' existiert oder es generell ungültig ist.
+                    passwordError.textContent = "Ungültiges Passwort oder bereits verwendet.";
+                    passwordError.style.display = 'block';
+                    console.log("Password invalid (no 'true' key found).");
+                }
+            } else {
+                passwordError.textContent = "Unerwartete Antwort vom Server.";
+                passwordError.style.display = 'block';
+                console.log("Unexpected server response format or not OK status (expected object).");
+            }
+        } catch (error) {
+            console.error('Fehler bei der Passwortvalidierung:', error);
+            passwordError.textContent = "Ein Fehler ist aufgetreten. Bitte versuche es später noch einmal.";
+            passwordError.style.display = 'block';
+            console.log("Fetch operation failed:", error);
+        }
+    });
+
+    // Event Listener für den "Weiter" Button auf dem Welcome Screen
+    startButton.addEventListener('click', () => {
+        welcomeScreen.classList.add('hidden'); // Willkommensseite ausblenden
+        mainContent.classList.remove('hidden'); // Hauptinhalt einblenden
+    });
+
+    // Köder dynamisch zur Seite hinzufügen
+    baits.forEach(bait => {
+        const baitItem = document.createElement('div');
+        baitItem.classList.add('bait-item');
+        baitItem.dataset.id = bait.id;
+        baitItem.innerHTML = `
+            <img src="${bait.imageUrl}" alt="${bait.name}">
+            <p>${bait.name}</p>
+        `;
+        baitItem.addEventListener('click', () => toggleBaitSelection(baitItem));
+        baitGrid.appendChild(baitItem);
+    });
+
+    function toggleBaitSelection(item) {
+        const baitId = parseInt(item.dataset.id);
+
+        if (item.classList.contains('selected')) {
+            item.classList.remove('selected');
+            selectedBaits = selectedBaits.filter(id => id !== baitId);
+        } else {
+            if (selectedBaits.length < 4) {
+                item.classList.add('selected');
+                selectedBaits.push(baitId);
+            } else {
+                alert('Du kannst maximal 4 Köder auswählen.');
+            }
+        }
+        if (selectedBaits.length !== 4) {
+            selectionError.style.display = 'block';
+        } else {
+            selectionError.style.display = 'none';
+        }
+    }
+
+    userInfoForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        if (selectedBaits.length !== 4) {
+            selectionError.style.display = 'block';
+            selectionError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        } else {
+            selectionError.style.display = 'none';
+        }
+
+        if (!validPassword) {
+            alert("Fehler: Kein gültiges Passwort vorhanden. Bitte starte neu.");
+            window.location.reload(); // Seite neu laden und zum Passwort-Screen zurückkehren
+            return;
+        }
+
+        const formData = {
+            password: validPassword, // Das validierte Passwort mitsenden
+            firstName: document.getElementById('firstName').value,
+            lastName: document.getElementById('lastName').value,
+            street: document.getElementById('street').value,
+            city: document.getElementById('city').value,
+            zipCode: document.getElementById('zipCode').value,
+            selectedBaits: selectedBaits.map(id => baits.find(b => b.id === id).name)
+        };
+
+        try {
+            const response = await fetch(dataWebhookUrl, { // Sende an den Daten-Webhook
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            // Änderung hier: Prüfe nur, ob der HTTP-Status erfolgreich war (200-299)
+            if (response.ok) {
+                console.log('Webhook Response:', result);
+                mainContent.classList.add('hidden');
+                thankYouMessage.style.display = 'block';
+                thankYouMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                validPassword = null; // Passwort nach erfolgreicher Bestellung löschen
+            } else {
+                console.error('Webhook Error:', result.message || 'Unbekannter Serverfehler');
+                alert(result.message || 'Es gab ein Problem beim Senden der Daten. Bitte versuche es später noch einmal.');
+            }
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
+            alert('Ein Netzwerkfehler ist aufgetreten. Bitte überprüfe deine Verbindung.');
+        }
+    });
+</script>
+</body>
+</html>
